@@ -9,23 +9,36 @@
   <body>
     <section id="chat">
       <ul id="membersList"></ul>
+      <!--so is this div responsible for the right side of the screen which are everything for the messages**-->
       <div id="log">
+        <!--why did we put messages div within the message scoller div why did we not make them their own div**-->
         <div id="messageScroller">
           <div id="messages"></div>
         </div>
+        <!--this part is responsible for where the chat input goes as well as the send button on the bottom right
+        of the screen right**-->
         <div id="compose">
-          <input id="chatInput" /><button id="sendChatButton">Send</button>
+          <input id="chatInput" /> <!--do inputs not have a closing tag is it just one tag**-->
+          <button id="sendChatButton">Send</button>
         </div>
       </div>
     </section>
     <dialog id="joinDialog">
       <form method="dialog">
+        <!--so here we say the input will be text only (why can we put numbers in then)**
+        (what are the options for type)** and the length will be 25 characters long only
+        and we can only have letters or numbers no special characters**-->
+        <!--what happens if we put in more than 25 characters does it just stop putting values in or does an error
+        show to say we have put in more than 25 characters**-->
+        <!--what does the oninput do again as well as the replace**-->
+        <!--why can't we say anything involving the minimum of 3 characters as well here why did we put it in the TS**-->
         <input
           id="nicknameInput"
           type="text"
           maxlength="25"
           oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
         />
+        <!--when we are ready and we met the requirements we can join the chat-->
         <button id="joinButton">Join</button>
       </form>
     </dialog>
