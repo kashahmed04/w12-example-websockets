@@ -102,8 +102,8 @@ wss.on("connection", (ws) => {
           players.forEach((player) => {
             player.type = i % 6 === 0 ? "zombie" : "human";
             if (player.type === "zombie") {
-              player.x = player.tx = Math.random() * 200;
-              player.y = player.ty = 100 + Math.random() * 100;
+              player.x = player.tx = 600 + Math.random() * 200;
+              player.y = player.ty = 500 + Math.random() * 100;
               player.start = player.eta = 0;
             } else {
               player.x = player.tx = Math.random() * 200;
