@@ -18,6 +18,15 @@ export const setupGame = (
   canvas.height = 600;
   const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
+  let skipMask = false;
+
+  document.addEventListener("keypress", (evt) => {
+    console.log(evt);
+    if (evt.key === "`") {
+      skipMask = true;
+    }
+  });
+
   let players = beginMessage.players;
   let playerMap: Map<string, Player> = new Map();
   players.forEach((player) => {
@@ -102,10 +111,6 @@ export const setupGame = (
       context.arc(x, y, 150, 0, Math.PI * 2);
       context.clip();
     }
-
-    // regardless, fill the canvas with white through the clip
-    context.fillStyle = "white";
-    context.fillRect(0, 0, 800, 600);
   };
 
   const draw = () => {
@@ -115,7 +120,12 @@ export const setupGame = (
     context.fillRect(0, 0, 800, 600);
 
     // set up the clipping path
-    clipMe();
+    if (!skipMask) {
+      clipMe();
+    }
+
+    context.fillStyle = "white";
+    context.fillRect(0, 0, 800, 600);
 
     // check for zombie self touching a human
     let me = playerMap.get(myId) as Player;
