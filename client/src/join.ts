@@ -39,5 +39,6 @@ export const setupJoin = (ws: WebSocket) => {
   });
 };
 
-//so does setupjoin and setupchat just go from client to server where does the server to all clients go to so everyone can see
+//so does setupjoin and setupchat just go from client (us and our nickname input or message) to server (websocket) 
+//for when someone initially connects to the websocket (server) where does the server to all clients go to so everyone can see
 //a member joined or left or if there was a chat****

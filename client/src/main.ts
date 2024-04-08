@@ -90,113 +90,91 @@ ws.addEventListener("message", async (evt) => {
 /**
  * NEW NOTES:
  * 
- * we can do networking and chat servers for games with web sockets (Involves a lot of clients)
+ * we can do networking and chat servers for games with websockets (involves a lot of clients which is everyone using the chat or game)**
  * so far we have made client requests to server or server to us and its back and fourth then it closes after the
- * request has been made 
+ * request has been made and completed from client to server or server to client**
+ * so we can only have 1 conneciton in either direction for a request 
+ * then it would close and we need to open a new connection for a new request**
  * 
- * but now messages can pass in both directinos back and fourth and the connections remains open all the time
- * the server can push messages to the server without notifying then (here is the message do what you will with it)
- * the server can broadcast messages to all the connected clients as well
+ * but now messages can pass in both directions back and fourth and the connections remains open all the time and
+ * the server can push messages to the server without notifying the clients (here is the message do what you will with it)**
+ * the server can broadcast messages to all the connected clients as well**
+ * the connections remain open for websockets and everything updates in real time whereas before we**
  * 
- * without web sockets we would have heartbeat and server asks if there are any updates and we would consistenlty ask for updates
- * if there are any but web sockets allow us to push emssages in real time instead of asking if there are any updates
+ * without web sockets we would have heartbeat and server asks if there are any updates from the client
+ * and the server would consistenlty ask for updates (same for client with server or only server with client)**
+ * if there are any but web sockets allow us to push messages in real time instead of asking if there are any updates (which can delay
+ * when things show up)**
  * 
- * we now have to have a back end server (we run node but it could be running C#, rust, go, etc.) we choose the ws library for
- * web sockets and the tools link are the other options we can use other than the ws library 
+ * go over slide 2**
+ * 
+ * we now have to have a back end server (we run node but it could be running C#, rust, go, etc.)** we choose the ws library for
+ * websockets and the tools link are the other options we can use other than the ws library for websockets** 
  * 
  * we have the example code repo but there ie also a local copy we can launch as well (we have 2 npm tabs one for server and
- * one for client we have to have open for web sockets)
+ * one for client we have to have open for web sockets which do)**
+ * what does the teacher station one allow does it allow it to be run on npm host** so everyone can connect otherwise it would be local
+ * and no network can be created and only us would be in the chat**
  * 
- * the server is a long running node process and the client is our vite dev server like we have been doing 
+ * the server is a long running node process and the client is our vite dev server like we have been doing**
  * 
- * when we connect we have a chat message server and the left pannel has everyone in the chat and the right tab are the chat
- * boxes 
- * when we make something exposed to host in vite that allows anyone to access the link otherwise it's locally to the users machine 
+ * when we connect we have a chat message server and the left pannel has the name of everyone in the chat and the right tab is the chat
+ * box
+ * when we make something exposed to host in vite that allows anyone to access the link otherwise it's local to the users machine** 
  * 
  * CHAT APPLICATION:
  * 
  * this repo has two projects it has the client, the server, and a shared directory for TS types (we have to go to the terminal
- * and the server side and)
+ * and the server side and)** (so client has index.html, chat.TS, join.TS, and main.TS right)(server has the index.TS)(the shared
+ * between the clientand the server is the messages.TS and player.TS)**(why is the shared folder in the server folder then if it's shared
+ * wouldnt it be in the root directory as a shared file like how client and server are)**
  * 
- * we need to go to client side in client folder and**
+ * we need to go to client side in client folder to launch vite because** (how do we do it in vite)**
  * 
  * if we try and do an npm install from the root file it will not work because there is no package.JSON in the root
- * directory (there has to be package.JSON in folder we are installing otherwise it won't work for npm install)
+ * directory (there has to be package.JSON in folder we are installing otherwise it won't work for npm install)**
+ * 
+ * go over slide 5 and 6** (what is the difference between index.TS (server) and join.TS and chat.TS (client))**
+ * 
+ * for slide 6 can anyone type the HVZ command to start the game**
+ * 
  * 
  * MESSAGE.TS:
  * 
- * we have a base message class adn it says each message will have a message type and we have
- * some interfaces that provide an actual value for the message type and adds fields for that particular type of messages
  * on the bottom we have a generic message type that is a union of all the message types in our file (we do this because 
- * we can take the JSON payload we bring in and cast it as the message type is belongs to and it gives us the fields we expect)
+ * we can take the JSON payload we bring in and cast it as the message type is belongs to and it gives us the fields we expect)**
  * 
  * we can also use JS type narrowing it will know which type of message it is and have the proper code hinting**
  * 
  * SERVER DIRECTORY:
  * 
- * node.JS only runs JS so when we go to satart a server it runs a TS compile first and it gives us the index JS which is the 
- * compiled down version of JS
- * we then run node with that index.JS (we look at it in TS but it's running in JS though)
+ * node.JS only runs JS so when we go to start a server it runs a TS compile first and it gives us the index JS which is the 
+ * compiled down version of JS (or TS)**
+ * we then run node with that index.JS (we look at it in TS but it's running in JS though)**
  * 
- * we have uuid in index.ts and its used for 
- * we have a server player is like a player but it has a web socket, we then maek a web socket and tell it what port to run on
- * we then have a map for a stine for user id then the server player which is empty then we have a broadcast to send a message
- * to all the players then conver the map into an array 
+ * where can we see the index.JS it's not here only the index.TS**
  * 
- * we then have our websocket listen for a connection which is whenever a person enters the server (or subscrobes to server)
- * then it connects and opens that web socket and eveyrthing within the connection code is for the individual player in the chat
- * and we have the message if a player sends one as well
+ * we have uuid in index.ts and its used for (why do we need an id for each player)** 
+ * does index.TS run whenever someone new joins the socket (is that how an id gets created for the player and we can use it in the
+ * other files)** (how because the other files don't reference index.TS)** 
  * 
- * the data comes in as an array string then we convert it into a string (JS object with JSON.parse) then we store it as a message
- * type which is our union type of message then we have type narrowing snd we switch based on the incoming message type and when
- * we are in the caseblock for join message it knows it was a join message and we show that a person has joined (we set the players
- * nickname and we construct a membership message and we say they have joined the chat then update the chat player list then
- * broadcast that message out to everyone)
+ * the servers job recieves messages from the client and also sends messages to the client (clients)** based on certain conditonas (sending
+ * messages to everyone)**
  * 
- * broadcast goes through player list and tells each player to use their own web socket to see the message that came in
- * when we chat message occurs then we build a chat message then broadcast it out to everyone 
+ * we appened the messages to the div with all the messages and we style the username to be bold as well as the text
+ * for the updateMmebers (or sendchat or which method)**
+ * it's like any other API event we have done and we** (did we do this in the chat file where did we do it)**
  * 
- * close happens when the client leaves or exits the browser so we delete the player by id and we say the player has left the chat
- * to everyone from a broadcast
- * 
- * the servers job recieves messages from the client and also sends messages to the client based on certain conditonas (sendin
- * message to everyone)
- * 
- * CLIENT:
- * 
- * INDEX.HTML:
- * 
- * we have dialouge box and we have the input and join button and we have an oninput on the user input in the dialouge and whenever
- * we change the value only limit it to numbers and letters not any special characters and also limit the entry to only 25 characters
- * 
- * MAIN.TS:
- * 
- * opens a new webs socket locally and maintains the player list and it sets the code for join and chat when we open the chat
- * and whenever it recives a message we parse the message from JSON into a JS object and its a regular message until the switch
- * statement until its a regular message or chat message to go to everyone then we display the message
- * 
- * JOIN.TS:
- * 
- * set up join gets query selectors and shows the modal and disbales the join button until 3 character for nickname has happened 
- * then we send the join message to the server
- * 
- * CHAT.TS:
- * 
- * send the chat whenever we click the send button or when we press enter while we are in the chat textbox then if there is something in
- * the input when we send it empty the textbox otherwise we don't
- * 
- * we appened the messages to the div with all the messages and we style the username to be bold as well as the tetx
- * for the updateMmebers it's like any other API event we have done and we
- * 
- * one downside is that if we want to make a change we have to restart the server and everything as well as the connections would be lost
- * (resatrt what and what changes)**
+ * one downside is that if we want to make a change we have to restart the server and everything as well as the connections 
+ * for the server (websocket) and client (people connected to the webscoket) would be lost**
+ * (restart what and what changes)**
  * 
  * HVZ:
  * 
- * looks like last branch but once all of us join there will be a command to bring us to canvas and blue dots are humans and
- * orange dots or zombies and when we press canvas we can move to a target and it slowly moves towards the point to get to the location
+ * looks like last branch but once all of us join there will be a command (HVZ) to bring us to canvas and blue dots are humans and
+ * orange dots are zombies and when we press canvas we can move to a target and it slowly moves towards the point to get to the location
  * humans have narrow point of view and zombies have a larger point of view (we used clipping path for canvas to limit our view
- * for the humans)
+ * for the humans and what they can see)(how)**
  * 
  * PLAYER.TS:
  * 
@@ -205,50 +183,58 @@ ws.addEventListener("message", async (evt) => {
  * everyone can go based on these time stamps over time and we can send it to the server (is our time stamp is before start or after estimed
  * time or in between then)**
  * 
- * everytime we click we get new start and end position as well as time and everyone gets a human or zombie type
+ * how do we calculate the estimated time to get to our target and why do we need it**
+ * how do we know what to send to web socket for program to work**
+ * 
+ * everytime we click we get new start and end position as well as time and everyone gets a human or zombie type**
  * 
  * INDEX.TS:
  * 
  * if the incoming text is HVZ then we go through the players and make every 6th player a zombie and we make the players and zombies
- * at a particlar part of the screen and they start off as not moving until
+ * at a particlar part of the screen and they start off as not moving until**
  * 
- * then we get the timestamp for the beginning of the game as well as 
+ * then we get the timestamp for the beginning of the game as well as**
  * 
- * the walkto and turn messafe get broadcast to everyone auotmcaitlly (we trust zombie client to say this person is a zombie when we 
- * tag them and its not secure because)(we assume the zombie tells the truth)
+ * the walkto and turn message get broadcasted to everyone automatically (we trust zombie client to say this person is a zombie when we 
+ * tag them and its not secure because)**(we assume the zombie tells the truth)**(how is the zombie a client are the humans a client too)**
+ * how are the automatic zombies clients**
  * 
  * MAIN.TS CLIENT:
  * 
- * whenever there is a begin game message and in the styles we hide the chat if in game and hide the game if in chat (still in DOM
- * but we hide specific things)
+ * whenever there is a begin game message (HVZ) in the styles we hide the chat if in game and hide the game if in chat (still in DOM
+ * but we hide specific things)**
+ * is there a way to get back to chat from game**
  * 
  * GAME.TS:
  * 
- * we set the walking speed in pixels per second for 10 and we set the game up for the web socket and we get the id for the player then set
- * the canvas up then we have the skip mask which does
+ * we set the walking speed in pixels per second for 10 and we set the game up for the websocket and we get the id for the player then set
+ * the canvas up then we have the skip mask which does**
  * 
  * we then make a local record of all the players then track the mouse position and everytime we move the mouse we track the mouse
- * x and y positon then we move the offset left and top because 
+ * x and y positon then we move the offset left and top because**
  * 
  * everytime we click the canvas we get the players current postion, figure out their target position for where they clicked,
- * ger that distance by subtracting target from start to get the estimated time for when we will get there and we do it based on the player
+ * get that distance by subtracting target from start postion to get the estimated time for 
+ * when we will get there and we do it based on the player** (what other calculation is involved for estimated time and 
+ * when we will get to our target position)**
  * 
  * get position is the interpolation logic and this tells us if we are at the start or end position or in between (do we stop
  * when we are at the target position)**
  * 
  * render player takes in a player and timestamp for the time for that player and we change the fillstyle based on if they are a human or
- * a zombie then just build a circle there and for every human there is
+ * a zombie then just build a circle there and for every human there is**
  * 
- * the clipping path is done by setting up a narrow arc then closer circle for human than larger circle for zombie and 
+ * the clipping path is done by setting up a narrow arc then smaller circle for human than larger circle (and arc)** for zombie and 
  * context.clip() is that the circle for the human and zombie we only see things within those circles
- * then we get the cone to to in the position of the players
+ * then we get the cone for the position of the players** (how can we see the white background and the players and zombies
+ * within the context.clip())**
  * 
- * draw method resets all the clipping paths and canvas and we will the canvas as black then set the clipping mask and we fill
- * the whole canvas with white but only the circles are filled white and if we are a zombie render for brains otherwise we are a human then
- * do this every frame
+ * draw method resets all the clipping paths and canvas and we will reset the canvas as black then set the clipping mask again and we fill
+ * the whole canvas with white but only the circles are filled white** (how)**
+ * and if we are a zombie render for brains otherwise we are a human then do this every frame**
  * 
- * for each player we write some DOM logic that appends HTML elements to the score board 
+ * for each player we write some DOM logic that appends HTML elements to the score board** (what score board)** 
  * 
- * if we wanted to host our own server for a web socket we need to use another service because banjo does not handle the web socket
+ * if we wanted to host our own server for a web socket we need to use another service because banjo does not handle the web socket**
  * 
  */
