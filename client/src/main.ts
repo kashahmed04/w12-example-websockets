@@ -11,6 +11,7 @@ import { Player } from "../../shared/Player";
 // (I'll have to change this to the teacher station IP address for the class demo)
 const ws = new WebSocket("ws://localhost:3000");
 
+//did we have this in the first branch why do we need this here I thought we did this index.TS**
 let playerList: Player[];
 let myId = "unknown-player";
 let playerMap: Map<string, Player>;
@@ -33,6 +34,7 @@ ws.addEventListener("message", async (evt) => {
   // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
   switch (message.messageType) {
     case "identify":
+      //where did we define this**
       myId = message.yourId;
       break;
     case "membership":
@@ -49,6 +51,11 @@ ws.addEventListener("message", async (evt) => {
       displayChat(message.nickname, message.text);
       break;
 
+    //so this is where we show the game menu right**
+    //why do we just target the game class name and never say on or off to turn it on or off**
+    //for the setup game would the message be the HVZ we say in chat and why would we need our ID (this refers to our ID right)**
+    //the ID would be the person who entered HVZ in the chat right**
+    //go over all** (go over difference between main branch and HVZ branch)**
     case "beginGame":
       document.body.className = "game";
       playerMap = setupGame(ws, message, myId);

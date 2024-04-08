@@ -96,6 +96,7 @@ wss.on("connection", (ws) => {
           text: incomingMessage.text,
           nickname: player.nickname,
         };
+        //go over all** (we want every 6th player to be a zombie and the rest to be humans)**
         broadcast(chatResponse);
         if (incomingMessage.text === "HvZ") {
           let i = 0;
@@ -113,6 +114,7 @@ wss.on("connection", (ws) => {
             i++;
           });
 
+          //go over all**
           const beginGame: BeginGameMessage = {
             messageType: "beginGame",
             players: getPlayerList(),
@@ -122,6 +124,7 @@ wss.on("connection", (ws) => {
         }
         break;
 
+      //go over all**
       case "walkTo":
         broadcast(incomingMessage);
         break;
@@ -132,10 +135,12 @@ wss.on("connection", (ws) => {
     }
   });
 
-  // respond to any close events:
+  //respond to any close events:
+  //why do we need this if we don't have a chat anymore does everything still render for a chat but it's just hidden when we are
+  //in a game**
   ws.on("close", () => {
     const player = players.get(id);
-    // (by removing this client from the connections Map)
+    //(by removing this client from the connections Map)
     players.delete(id);
 
     const playerList = getPlayerList();
