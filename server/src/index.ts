@@ -2,7 +2,13 @@ import { WebSocketServer, WebSocket } from "ws";
 import { v4 as uuidv4 } from "uuid";
 
 import { Player } from "../../shared/Player";
-import { ChatMessage, MembershipMessage, Message } from "../../shared/Messages";
+import {
+  BeginGameMessage,
+  ChatMessage,
+  IdentifyMessage,
+  MembershipMessage,
+  Message,
+} from "../../shared/Messages";
 
 export interface ServerPlayer extends Player {
   ws: WebSocket;
@@ -28,6 +34,13 @@ const getPlayerList = (): Player[] => {
     playerList.push({
       id: player.id,
       nickname: player.nickname,
+      x: player.x,
+      y: player.y,
+      tx: player.tx,
+      ty: player.ty,
+      start: player.start,
+      eta: player.eta,
+      type: player.type,
     });
   });
 
@@ -40,7 +53,18 @@ wss.on("connection", (ws) => {
   const id = uuidv4();
 
   // create an entry in our connections array
-  players.set(id, { id, nickname: id, ws });
+  players.set(id, {
+    id,
+    nickname: id,
+    ws,
+    x: 0,
+    y: 0,
+    tx: 0,
+    ty: 0,
+    start: 0,
+    eta: 0,
+    type: "human",
+  });
 
   // respond to any error events:
   ws.on("error", console.error);
@@ -73,7 +97,38 @@ wss.on("connection", (ws) => {
           nickname: player.nickname,
         };
         broadcast(chatResponse);
+        if (incomingMessage.text === "HvZ") {
+          let i = 0;
+          players.forEach((player) => {
+            player.type = i % 6 === 0 ? "zombie" : "human";
+            if (player.type === "zombie") {
+              player.x = player.tx = Math.random() * 200;
+              player.y = player.ty = 100 + Math.random() * 100;
+              player.start = player.eta = 0;
+            } else {
+              player.x = player.tx = Math.random() * 200;
+              player.y = player.ty = Math.random() * 100;
+              player.start = player.eta = 0;
+            }
+            i++;
+          });
+
+          const beginGame: BeginGameMessage = {
+            messageType: "beginGame",
+            players: getPlayerList(),
+            timestamp: Date.now(),
+          };
+          broadcast(beginGame);
+        }
         break;
+
+      case "walkTo":
+        broadcast(incomingMessage);
+        break;
+
+      case "turn":
+        players.get(incomingMessage.exHumanId).type = "zombie";
+        broadcast(incomingMessage);
     }
   });
 
@@ -92,6 +147,12 @@ wss.on("connection", (ws) => {
     };
     broadcast(response);
   });
+
+  const identify: IdentifyMessage = {
+    messageType: "identify",
+    yourId: id,
+  };
+  ws.send(JSON.stringify(identify));
 });
 
 console.log("listening on 3000");

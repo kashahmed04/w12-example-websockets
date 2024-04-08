@@ -3,6 +3,7 @@ import "./styles.css";
 
 import { Message } from "../../shared/Messages";
 import { setupJoin } from "./join";
+import { setupGame, updateScore } from "./game";
 import { displayChat, setupChat, updateMembers } from "./chat";
 import { Player } from "../../shared/Player";
 
@@ -11,6 +12,8 @@ import { Player } from "../../shared/Player";
 const ws = new WebSocket("ws://localhost:3000");
 
 let playerList: Player[];
+let myId = "unknown-player";
+let playerMap: Map<string, Player>;
 
 // once the connection is open
 ws.addEventListener("open", (evt) => {
@@ -29,6 +32,9 @@ ws.addEventListener("message", async (evt) => {
   // use "Type Narrowing" - TypeScript knows what type it is based on the messageType
   // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
   switch (message.messageType) {
+    case "identify":
+      myId = message.yourId;
+      break;
     case "membership":
       playerList = message.playerList;
       updateMembers(message.playerList);
@@ -41,6 +47,28 @@ ws.addEventListener("message", async (evt) => {
       break;
     case "chat":
       displayChat(message.nickname, message.text);
+      break;
+
+    case "beginGame":
+      document.body.className = "game";
+      playerMap = setupGame(ws, message, myId);
+      updateScore(playerMap);
+      break;
+
+    case "walkTo":
+      const player = playerMap.get(message.playerId) as Player;
+      player.x = message.x;
+      player.y = message.y;
+      player.tx = message.tx;
+      player.ty = message.ty;
+      player.start = message.start;
+      player.eta = message.eta;
+      break;
+
+    case "turn":
+      const freshZom = playerMap.get(message.exHumanId) as Player;
+      freshZom.type = "zombie";
+      updateScore(playerMap);
       break;
   }
 });

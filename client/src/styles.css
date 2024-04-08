@@ -8,6 +8,18 @@ body {
   height: 100%;
 }
 
+.game #chat {
+  display: none;
+}
+
+.chat #game {
+  display: none;
+}
+
+canvas {
+  border: 1px solid black;
+}
+
 #chat {
   display: flex;
   flex-direction: row;
@@ -62,4 +74,25 @@ body {
 
 .speaker {
   font-weight: bold;
+}
+
+#game {
+  display: flex;
+  gap: 20px;
+}
+
+.zombie::before,
+.human::before {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  content: "";
+  margin-right: 6px;
+}
+.zombie::before {
+  background-color: orange;
+}
+.human::before {
+  background-color: blue;
 }
