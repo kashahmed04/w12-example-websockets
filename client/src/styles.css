@@ -1,0 +1,65 @@
+html {
+  padding: 40px;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#chat {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+#membersList {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+#log {
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 100%;
+  gap: 10px;
+}
+
+#messageScroller {
+  overflow-y: scroll;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-anchor: auto !important;
+  padding: 10px;
+  padding-right: 20px;
+}
+
+#messages p {
+  text-align: right;
+  padding: 5px;
+}
+
+#compose {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 8px;
+}
+#compose input {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.speaker {
+  font-weight: bold;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node dist/server/src/index.js",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.8",
+    "@types/ws": "^8.5.10",
+    "typescript": "^5.4.4"
+  }
+}

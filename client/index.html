@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Client</title>
+  </head>
+  <body>
+    <section id="chat">
+      <ul id="membersList"></ul>
+      <div id="log">
+        <div id="messageScroller">
+          <div id="messages"></div>
+        </div>
+        <div id="compose">
+          <input id="chatInput" /><button id="sendChatButton">Send</button>
+        </div>
+      </div>
+    </section>
+    <dialog id="joinDialog">
+      <form method="dialog">
+        <input
+          id="nicknameInput"
+          type="text"
+          maxlength="25"
+          oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
+        />
+        <button id="joinButton">Join</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
