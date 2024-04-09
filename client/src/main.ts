@@ -2,34 +2,24 @@ import "./reset.css";
 import "./styles.css";
 
 import { Message } from "../../shared/Messages"; //so this says get out the src folder in client, then get out of the client folder
-//(this brings us to the root directory), then go to the shared folder then the messages file**
-import { setupJoin } from "./join"; //why do we need the ./ here why not a / only** (difference between ../,./, and /)**
+//(this brings us to the root directory), then go to the shared folder then the messages file (yes)
+import { setupJoin } from "./join";  // ./ is the same folder and / is go back to the root
 import { displayChat, setupChat, updateMembers } from "./chat";
 import { Player } from "../../shared/Player";
 
 // Connect to the WebSocket server
 // (I'll have to change this to the teacher station IP address for the class demo)
 // do we have to say anything to use the web socket API specificially in our code or is it just built in when we say we want
-// to make a new web socket and do commands for a web socket**
+// to make a new web socket and do commands for a web socket
 const ws = new WebSocket("ws://localhost:3000");
 
-//player list to show the players in the chat on the left side of the screen (the list of people who are in the chat)**
+//player list to show the players in the chat on the left side of the screen (the list of people who are in the chat)
 let playerList: Player[];
 
 // once the connection is open
 ws.addEventListener("open", (evt) => {
   console.log("connected", evt);
-  // allow the user to join the chat (see join.ts)
-  // once we open the browser for the web socket connection we open up the modal before we show their name in the chat
-  // but they still initially have connection even though their name may not show until they press the join button**
-  // so this makes a local (or network)** connection to the users browser and the server right or is it everyones browser and the server
-  // because the link was not local to a users machine and was global**
-  // is there one server per user or one server for all the users how does it work if theres only one link for everyone to use**
-  // one link for everyone gives one user the connection to the whole server where all the other users are connected to the same server**
-  //do we only pass our information from client (us and our nickname) to the server (websocket) and we don't display it yet from
-  //server (websocket) to clients (all of us in the chat)**
-  //where would we have the server to clients connection because the join message interface does not have that feature**
-  //it only has the single client to the server connection**
+  //web socket connects as soon as we open the browser
   setupJoin(ws);
   // allow the user to monitor the chat (see chat.ts)
   //this allows us to have the connect to the client (us and our message) to the server (websocket) for us to give data
@@ -37,19 +27,15 @@ ws.addEventListener("open", (evt) => {
   setupChat(ws);
 });
 
-//is message an add event listener for the websocket only and how does it know to target the message we put into the 
-//chat input element if we don't target it here**
-//we make this a promise becuase**
-//go over all**
-//how does it know to display this to all users is it because we say we are using the web socket here and we are
-//already connected so everyone sees these changes**
-//how does the chat move like that how does it not overlap is it a style (for the joins and leaves and chat messages)**
+//the message event listener is the web socket specific event (when the web socket recieves a message then handle it)
 ws.addEventListener("message", async (evt) => {
   // parse the JSON message
   //how did we know what message to get specifically**
   //why did we use message here instead of message type (whats the dfference between both and how do we know
   //when to use them)**
   //why did we say Message = here because we said as message**
+  //we convert the JSON string and we convert it to a JS object
+  //the way we define it we may need one or the other but we do both so we make sure we get a proper JSON response back
   const message: Message = JSON.parse(evt.data) as Message;
   // why do we parse this if our message was made orignally in JS and why did we stringify it in the send chat method then
   // if we were just going to parse it**
@@ -66,7 +52,11 @@ ws.addEventListener("message", async (evt) => {
       //we only use this when the chat is for membership though (how does it know if a member leaves though or is added)**
       updateMembers(message.playerList);
 
-      //split the nickname by the space and the [0] means**
+      //split the nickname by the space and the [0] means (if we have a long user id has left the chat we split it on the space
+      //and split it on the space and we get long user id and if the length is greater than 26 it means they are unregistered and
+      //we don't want to show that infromation anywhere to clients otherwise if it's less than 26 characters we do want to show that
+      //information)(this is intially when they are in the modal or leave or join and we don't want to show their id to the clients
+      //if they leave or join)
       const nickname = message.text.split(" ")[0];
       if (nickname.length < 26) {
         // I want to hide join/leaves from users without nicknames.

@@ -1,7 +1,7 @@
 import { ChatMessage } from "../../shared/Messages";
 import { Player } from "../../shared/Player";
 
-//pass in the web socket from main so we can use it here**
+//pass in the web socket from main so we can use it here
 export const setupChat = (ws: WebSocket) => {
   const chatInput = document.querySelector("#chatInput") as HTMLInputElement;
   const sendChatButton = document.querySelector(
@@ -9,9 +9,15 @@ export const setupChat = (ws: WebSocket) => {
   ) as HTMLButtonElement;
 
   const sendChat = () => {
-    //if the chat input has a length greater than 0 (not blank) then we create a chat message with the message type
-    //and the nickname (why is it blank)** then we get the input for what the user put in and make it the text field for
-    //the chat message**
+    //the nickname is blank so we don't want someone impersonating someone else (we leave the name blank here but in index.ts
+    //the server gets the name of the player sending the message and gives it to all the clients)
+    //if someone gave an incorrect nickname if the server just trusts what the player sent then it would be easy to impersonate someone
+    //the socket knows which person is it in index.ts so we assign the name there
+    //over here there is no clear connection on who is connected to the web socket but in index.ts it is so we assign the name there
+    //in the server it has several connections to the server and it maps to one of the other clients so the server
+    //knows which socket and browser it belongs to 
+    //main only has to one web socket (only one to listen and send)
+    //main is only us and the server and index.ts is all the clients and the server (multiple aspects)**
     if (chatInput.value.length > 0) {
       const chatMessage: ChatMessage = {
         messageType: "chat",
@@ -40,15 +46,15 @@ export const setupChat = (ws: WebSocket) => {
   });
 };
 
-//we take in the server (I thought it would have been the sender)** and the message the person wanrs to send then
-//we create some elements then show the senders username and their message and append that to the messages HTML element**
-//we want to make sure to add the speaker which is the sender before the hat though in the chat box**
-//why did we have a span for the speaker and not a p tag instead also why did we make a classname for the speaker**
-//how does this work for if the input was a membership type and a chat type**
+//we are saying the server show this to all the clients that this person has joined or left the chat 
 export const displayChat = (sender: string, message: string) => {
   const messages = document.querySelector("#messages") as HTMLDivElement;
 
   const chat = document.createElement("p");
+  //a span is an inline element and we are marking a portion of that text from different as the rest of it
+  //we use a span because we don't want there to be a line break we just want this information to be highlighted
+  //(in the styles we make the name bold to highlight it)
+  //we need the classname to put styles on the element 
   const speaker = document.createElement("span");
   speaker.className = "speaker";
   speaker.innerText = `${sender}:`;
@@ -66,7 +72,18 @@ export const updateMembers = (players: Player[]) => {
     "#membersList"
   ) as HTMLUListElement;
 
+  //replace children clears out the whole HTML element (it would clear all the children regardless of what type they are)
   membersList.replaceChildren();
+
+  //when the browser has connected but not joined there exists a player that has the uuid and no nickname and in index.ts 
+  //we set the nickname of id for the id if they did not make a nickname (when they are on the modal)
+  //by saying that the player id is not the same as the nickname they are already made and did the modal already 
+  //create an entry in our connections array
+  //players.set(id, { id, nickname: id, ws });
+  //the .set is a map thing and a map is like dictionary and it lets us look up an object by and id within index or indexOf
+  //map has functions to help us set things in the map and the object literals we edit directly and map restricts what we put in it
+  //more than the object literal
+  //the player stores the id and the name as one value in the array
 
   players.forEach((player) => {
     if (player.id !== player.nickname) {

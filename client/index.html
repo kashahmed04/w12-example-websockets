@@ -9,29 +9,35 @@
   <body>
     <section id="chat">
       <ul id="membersList"></ul>
-      <!--so is this div responsible for the right side of the screen which are everything for the messages**-->
+      <!--so is this div responsible for the right side of the screen which are everything for the messages (yes)-->
       <div id="log">
-        <!--why did we put messages div within the message scoller div why did we not make them their own div**-->
+        <!--why did we put messages div within the message scoller div why did we not make them their own div (log is the parent
+          that does the flexbox for the message scoller and the messages) there were some CSS tricks to make the text
+          show at the bottom of the screen and to have everything move up when there was a chat (also have the message scroller
+          to scroll the messages)-->
         <div id="messageScroller">
           <div id="messages"></div>
         </div>
         <!--this part is responsible for where the chat input goes as well as the send button on the bottom right
-        of the screen right**-->
+        of the screen right (yes)-->
         <div id="compose">
-          <input id="chatInput" /> <!--do inputs not have a closing tag is it just one tag**-->
+          <input id="chatInput" /> <!--do inputs not have a closing tag is it just one tag (self closing tag)-->
           <button id="sendChatButton">Send</button> <!--these are two different tags for the input and button right**-->
         </div>
       </div>
     </section>
     <dialog id="joinDialog">
       <form method="dialog">
-        <!--so here we say the input will be text only (why can we put numbers in then)**
-        (what are the options for type)** and the length will be 25 characters long only
-        and we can only have letters or numbers no special characters**-->
+        <!--so here we say the input will be text only 
+        and the length will be 25 characters long only
+        and we can only have letters or numbers no special characters (yes)-->
         <!--what happens if we put in more than 25 characters does it just stop putting values in or does an error
-        show to say we have put in more than 25 characters**-->
-        <!--what does the oninput do again as well as the replace**-->
-        <!--why can't we say anything involving the minimum of 3 characters as well here why did we put it in the TS**-->
+        show to say we have put in more than 25 characters (it just stops putting the character we have)-->
+        <!--what does the oninput do again as well as the replace (replace anything that are not letter or 0-9 with an empty string
+          and do it globally and do it with as many values in that username string)(if we remove the g then it would only remove
+          the first special character and the others would stay there)-->
+        <!--why can't we say anything involving the minimum of 3 characters as well here why did we put it in the TS (we could also
+          do minimum length here as well)-->
         <input
           id="nicknameInput"
           type="text"
