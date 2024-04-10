@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { v4 as uuidv4 } from "uuid";
-//why do we need all this here specifically why not in main and what do these do**
+//why do we need all this here specifically why not in main and what do these do
 
 import { Player } from "../../shared/Player";
 import { ChatMessage, MembershipMessage, Message } from "../../shared/Messages";
@@ -23,9 +23,10 @@ const players = new Map<string, ServerPlayer>();
 // how does it know to call these methods if we never use them in any of our files**
 // we have to do JSON.stringify because in main we had our message event listener and we parsed our data we got back for the message
 // as a JS object so now we need to put it back in JSON format to send to the websocket for each player to see the message**
-const broadcast = (data: Message) => {
+const broadcast = (data: Message) => { //this takes in a message type and it lets TS know it's one of these properties of type message
   players.forEach((player) => {
     //is this the only time we send things our to all the players (how does it know to show up in the right locations for the text)****
+    //we define server player is a player who has a websocket
     player.ws.send(JSON.stringify(data));
   });
 };
@@ -36,6 +37,11 @@ const broadcast = (data: Message) => {
 // why do we need an id for each player**
 // so this creates a new array every time the function is called and the old ones get replaced because they get overriden by the
 // new array that gets returned****
+
+//line 38 when the websocket server gets a connection event it means user has connected and this callback happens with our websocket
+//and the player gets their own web socket
+//line 43 builds a player server object that has an id, nickname, and web socket, and that gets set in the map
+//and the server maintains everything with a player and line 18 we send a message or broadcast specific data to all the players
 const getPlayerList = (): Player[] => {
   const playerList: Player[] = [];
   players.forEach((player) => {
@@ -45,7 +51,7 @@ const getPlayerList = (): Player[] => {
     });
   });
 
-  //why do we return this array of players if no other file can access it because there is no reference to index.TS in other files****
+  //we use this for our broadcasting as data gets updated
   return playerList;
 };
 
@@ -54,16 +60,22 @@ const getPlayerList = (): Player[] => {
 //through right)**
 //difference between open event in main and connection event in here**
 //go over all**
+//the websocket in main is a generic websocket that comes with the browser and the websocket in the server
+//comes from the websocket library which is slightly different thats why we have the .on function (conceptually they do the
+//same thing but the syntax is different)
+//main is the client and index is the server so the connections are different 
+//the main works with the client and sends things to the server
+// and the index.ts works with the server to see things sent in and send everything to all clients
 wss.on("connection", (ws) => {
   // assign an id to the client
   const id = uuidv4();
 
   // create an entry in our connections array
-  // why do we use a map why don't we say push because we had a players array**
+  // set the id for the nickname for the player until the join message with their actual name (they press join) then it 
+  //gets a huamn readable nickname
   players.set(id, { id, nickname: id, ws });
 
   // respond to any error events:
-  // when would there be the case of an error**
   ws.on("error", console.error);
 
   // respond to any message events:
@@ -71,7 +83,8 @@ wss.on("connection", (ws) => {
   ws.on("message", (data) => {
     // parse the incoming message as a "Message" type
     // why do we parse this here if there is not connect to the chat file where we made the message a JSON.stringify**
-    const incomingMessage: Message = JSON.parse(data.toString());
+    const incomingMessage: Message = JSON.parse(data.toString()); 
+    //this is a message type and it lets TS know it's one of these properties of type message
     const player = players.get(id);
 
     // use "Type Narrowing" - TypeScript knows what type it is based on the messageType
@@ -80,12 +93,14 @@ wss.on("connection", (ws) => {
     // and a new name added (what about when someone leaves)**
     // go over all**
     // why did we have 2 type narrowing one for main and one for here (whats the difference)**
+    //this is where the messages we built in chat get sent out 
     switch (incomingMessage.messageType) {
       //we did not have a seperate case for the membership because it was included in join right**
       case "join":
         player.nickname = incomingMessage.nickname;
         const playerList = getPlayerList();
 
+        //this is a join message and we want to respond to join messages by broadcasting it (same for the other types of messages)
         const joinResponse: MembershipMessage = {
           messageType: "membership",
           text: `${incomingMessage.nickname} has joined the chat.`,

@@ -8,6 +8,7 @@ export type MessageType = "join" | "membership" | "chat";
 
 //what was the base message for** (are we saying each type of message will of type base message in the message type
 //interfaces)**
+//
 export interface BaseMessage {
   messageType: MessageType;
 }

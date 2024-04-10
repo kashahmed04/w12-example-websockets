@@ -61,7 +61,14 @@ ws.addEventListener("message", async (evt) => {
       //information)(this is intially when they are in the modal or leave or join and we don't want to show their id to the clients
       //if they leave or join)
       //what is the name was less than 26 characters and they did not press the join button, or left the chat how would we now
-      //display chat (what is the 0th index for)**
+      //display chat (what is the 0th index for)
+      //when someone has not officially joined or left don't show them on the join (the leave chat is handled by the membership message)
+      //we say the 0th index because when we split the array it says that ____ has joined so we get the first element of that
+      //for the name and use that if it's less than 25 characters we display it otherwise we know it's an id for the nickname
+      //(the person has not officially joined yet so we don't show the users)(spaces count as a special character
+      //so it does not count in a nickname and it has to be no spaces)
+      //in index.ts we have a statement saying that if we join get the message and send it as a stringify but here we parse
+      //that data then work with it 
       const nickname = message.text.split(" ")[0];
       if (nickname.length < 26) {
         // I want to hide join/leaves from users without nicknames.
@@ -91,6 +98,17 @@ ws.addEventListener("message", async (evt) => {
 /**
  * NEW NOTES:
  * 
+ * before web sockets every request is a one and done thing for sending and recieving and the connection is closed after we are done
+ * with a request 
+ * 
+ * with web sockets we say we want to connect to messages and messages can be sent back and forth and the browser socket stays
+ * open and it's in real time because we send and recieve things in real time 
+ * 
+ * since web sockets leave the channel open the channel remains open (once chat is open the server knows automatically when a message
+ * is recieved whereas with before the client asks for specific things or like a heartbeat and every frequency the server would respond
+ * with anything new if we need it and this is how it does the one and done for the previous method (it would close after each heartbeat
+ * and open again for the next heartbeat))
+ * 
  * we can do networking and chat servers for games with websockets (involves a lot of clients which is everyone using the chat or game)**
  * so far we have made client requests to server or server to us and its back and fourth then it closes after the
  * request has been made and completed from client to server or server to client**
@@ -110,7 +128,8 @@ ws.addEventListener("message", async (evt) => {
  * go over slide 2**
  * 
  * we now have to have a back end server (we run node but it could be running C#, rust, go, etc.)** we choose the ws library for
- * websockets and the tools link are the other options we can use other than the ws library for websockets** 
+ * websockets and the tools link are the other options we can use other than the ws library for websockets** (there are other server
+ * side languages that use the ws library)
  * 
  * we have the example code repo but there ie also a local copy we can launch as well (we have 2 npm tabs one for server and
  * one for client we have to have open for web sockets which do)**
