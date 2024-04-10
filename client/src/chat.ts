@@ -46,7 +46,10 @@ export const setupChat = (ws: WebSocket) => {
   });
 };
 
-//we are saying the server show this to all the clients that this person has joined or left the chat 
+//we are saying the server show this to all the clients that this person has joined or left the chat for the membership
+//for the chat we are saying that
+//after we get our chat message information we send the data over as a JSON.stringify because that's what websockets
+//accept and they don't accept a JS object (for sentchat())**
 export const displayChat = (sender: string, message: string) => {
   const messages = document.querySelector("#messages") as HTMLDivElement;
 
@@ -83,7 +86,7 @@ export const updateMembers = (players: Player[]) => {
   //the .set is a map thing and a map is like dictionary and it lets us look up an object by and id within index or indexOf
   //map has functions to help us set things in the map and the object literals we edit directly and map restricts what we put in it
   //more than the object literal
-  //the player stores the id and the name as one value in the array
+  //the player stores the id and the name as one value in the array (based on the player file)
 
   players.forEach((player) => {
     if (player.id !== player.nickname) {

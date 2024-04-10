@@ -7,6 +7,8 @@ import { setupJoin } from "./join";  // ./ is the same folder and / is go back t
 import { displayChat, setupChat, updateMembers } from "./chat";
 import { Player } from "../../shared/Player";
 
+//why did we put the shared folders in server does it matter where we put it or did it have to be put in server folder**
+
 // Connect to the WebSocket server
 // (I'll have to change this to the teacher station IP address for the class demo)
 // do we have to say anything to use the web socket API specificially in our code or is it just built in when we say we want
@@ -30,20 +32,21 @@ ws.addEventListener("open", (evt) => {
 //the message event listener is the web socket specific event (when the web socket recieves a message then handle it)
 ws.addEventListener("message", async (evt) => {
   // parse the JSON message
-  //how did we know what message to get specifically**
-  //why did we use message here instead of message type (whats the dfference between both and how do we know
-  //when to use them)**
-  //why did we say Message = here because we said as message**
+  //how did we know what message to get specifically (do we use this with any message)** (is it everytime we send a chat
+  //and it goes to sendchat() in the chat file then stringifiy that message to send in the server so we parse it here
+  //whatever is sent to the socket in chat)**
   //we convert the JSON string and we convert it to a JS object
-  //the way we define it we may need one or the other but we do both so we make sure we get a proper JSON response back
+  //the way we define it we may need one or the other for the Message defintion
+  // but we do both so we make sure we get a proper JSON response back
   const message: Message = JSON.parse(evt.data) as Message;
-  // why do we parse this if our message was made orignally in JS and why did we stringify it in the send chat method then
-  // if we were just going to parse it**
   console.log(message);
 
   // use "Type Narrowing" - TypeScript knows what type it is based on the messageType
   // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions
-  // we only got message from the message file so how do we know we can use message type as well**
+  // we only got message from the message file so how do we know we can use message type as well** (did we import the last line
+  // from message talking about if it was a join, membership, or chat, if so why did we check as a string for
+  // the switch statements if our string declaration was at the top of the file)**(is it because we check the message type
+  // which is a string within the switch statements why did we not start off with that then)**
   switch (message.messageType) {
     case "membership":
       playerList = message.playerList;
@@ -57,17 +60,25 @@ ws.addEventListener("message", async (evt) => {
       //we don't want to show that infromation anywhere to clients otherwise if it's less than 26 characters we do want to show that
       //information)(this is intially when they are in the modal or leave or join and we don't want to show their id to the clients
       //if they leave or join)
+      //what is the name was less than 26 characters and they did not press the join button, or left the chat how would we now
+      //display chat (what is the 0th index for)**
       const nickname = message.text.split(" ")[0];
       if (nickname.length < 26) {
         // I want to hide join/leaves from users without nicknames.
         //the the nickname is less than 25 characters then we want to**
-        //how does it know we are referring to the websocket server if its a string**
+        //how does it know we are referring to the websocket server if its a string for the cases and the server here below 
+        //for display chat**
+        //how does it know to send the message to the clients from the server if the display chat does not do that
+        //and only adds texts and appends it to the message section on the right side of the screen**
+        //how do we know what message.text is equal to (where do we set it)**
         displayChat("server", message.text);
       }
       break;
 
       //if its a case for chatting we just have the users nickname and the message and send it out to the message box on
       //the right of the screen**
+      //how does it know to send the message to the server from the client if the display chat does not do that
+      //and only adds texts and appends it to the message section on the right side of the screen**
     case "chat":
       displayChat(message.nickname, message.text);
       break;

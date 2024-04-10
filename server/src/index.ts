@@ -25,6 +25,7 @@ const players = new Map<string, ServerPlayer>();
 // as a JS object so now we need to put it back in JSON format to send to the websocket for each player to see the message**
 const broadcast = (data: Message) => {
   players.forEach((player) => {
+    //is this the only time we send things our to all the players (how does it know to show up in the right locations for the text)****
     player.ws.send(JSON.stringify(data));
   });
 };
@@ -33,6 +34,8 @@ const broadcast = (data: Message) => {
 // why did we map players if we already had a list of them in the message file and in main**
 // how do we know what id to give the player does the websocket give an id for each player automatically**
 // why do we need an id for each player**
+// so this creates a new array every time the function is called and the old ones get replaced because they get overriden by the
+// new array that gets returned****
 const getPlayerList = (): Player[] => {
   const playerList: Player[] = [];
   players.forEach((player) => {
@@ -42,7 +45,7 @@ const getPlayerList = (): Player[] => {
     });
   });
 
-  //why do we return this array of players if no other file can access it**
+  //why do we return this array of players if no other file can access it because there is no reference to index.TS in other files****
   return playerList;
 };
 
@@ -78,6 +81,7 @@ wss.on("connection", (ws) => {
     // go over all**
     // why did we have 2 type narrowing one for main and one for here (whats the difference)**
     switch (incomingMessage.messageType) {
+      //we did not have a seperate case for the membership because it was included in join right**
       case "join":
         player.nickname = incomingMessage.nickname;
         const playerList = getPlayerList();
