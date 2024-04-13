@@ -12,7 +12,7 @@ export const setupChat = (ws: WebSocket) => {
     //the nickname is blank so we don't want someone impersonating someone else (we leave the name blank here but in index.ts
     //the server gets the name of the player sending the message and gives it to all the clients)
     //if someone gave an incorrect nickname if the server just trusts what the player sent then it would be easy to impersonate someone
-    //the socket knows which person is it in index.ts so we assign the name there
+    //the socket knows which person it is in index.ts so we assign the name there
     //over here there is no clear connection on who is connected to the web socket but in index.ts it is so we assign the name there
     //in the server it has several connections to the server and it maps to one of the other clients so the server
     //knows which socket and browser it belongs to 
@@ -50,6 +50,8 @@ export const setupChat = (ws: WebSocket) => {
 //for the chat we are saying that
 //after we get our chat message information we send the data over as a JSON.stringify because that's what websockets
 //accept and they don't accept a JS object (for sentchat())**
+//display chat does not display the message it just uses the message it got from the server (the same case for a chat
+//we have the nickname for the sender and their message)
 export const displayChat = (sender: string, message: string) => {
   const messages = document.querySelector("#messages") as HTMLDivElement;
 

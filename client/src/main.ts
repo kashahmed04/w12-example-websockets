@@ -3,6 +3,9 @@ import "./styles.css";
 
 import { Message } from "../../shared/Messages"; //so this says get out the src folder in client, then get out of the client folder
 //(this brings us to the root directory), then go to the shared folder then the messages file (yes)
+//could we have also said /shared/Messages so then we would start at the root for the first /** (is the first slash 
+//responsible for if we go to the root, up a folder, or stay in the same folder and the rest of the / are for the specific folder
+//names)**
 import { setupJoin } from "./join";  // ./ is the same folder and / is go back to the root
 import { displayChat, setupChat, updateMembers } from "./chat";
 import { Player } from "../../shared/Player";
@@ -130,6 +133,7 @@ ws.addEventListener("message", async (evt) => {
  * we now have to have a back end server (we run node but it could be running C#, rust, go, etc.)** we choose the ws library for
  * websockets and the tools link are the other options we can use other than the ws library for websockets** (there are other server
  * side languages that use the ws library)
+ * 
  * 
  * we have the example code repo but there ie also a local copy we can launch as well (we have 2 npm tabs one for server and
  * one for client we have to have open for web sockets which do)**
